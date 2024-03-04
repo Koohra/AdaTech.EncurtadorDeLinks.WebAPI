@@ -1,0 +1,6 @@
+@AdaTech.EncurtadorDeLinks.WebAPI_HostAddress = http://localhost:5298
+
+GET {{AdaTech.EncurtadorDeLinks.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
