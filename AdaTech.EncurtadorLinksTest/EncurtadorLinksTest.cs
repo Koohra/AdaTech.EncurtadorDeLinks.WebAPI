@@ -1,24 +1,20 @@
 ﻿using AdaTech.EncurtadorDeLinks.WebAPI.Models;
 using AdaTech.EncurtadorDeLinks.WebAPI.Services;
 using FluentAssertions;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NSubstitute;
+
 
 namespace AdaTech.EncurtadorLinks.Test
 {
     public class EncurtadorLinksServicesTest
     {
-        private readonly Mock<IRandomizer> _randomizerMock;
+        private readonly IRandomizer _randomizer;
         private readonly EncurtadorLinksServices _service;
 
         public EncurtadorLinksServicesTest()
         {
-            _randomizerMock = new Mock<IRandomizer>();
-            _service = new EncurtadorLinksServices(_randomizerMock.Object);
+            _randomizer = Substitute.For<IRandomizer>();
+            _service = new EncurtadorLinksServices(_randomizer);
         }
 
         [Theory]
@@ -28,8 +24,8 @@ namespace AdaTech.EncurtadorLinks.Test
         public void EncurtarLinks_DeveRetornarLinkComUrlCurta(int indice, string esperado)
         {
             // Arrange
-            var link = new Link { UrlOriginal = "https://www.example.com" };
-            _randomizerMock.Setup(r => r.Sortear(It.IsAny<int>())).Returns(indice);
+            var link = new Link { Id = 1, UrlOriginal = "https://www.example.com" };
+            _randomizer.Sortear(Arg.Any<int>()).Returns(indice);
 
             // Act
             var result = _service.EncurtarLinks(link);
@@ -44,8 +40,8 @@ namespace AdaTech.EncurtadorLinks.Test
         public void ObterLinkOriginal_DeveRetornarUrlOriginal_QuandoLinkCurtoExiste()
         {
             // Arrange
-            var link = new Link { UrlOriginal = "https://www.example.com" };
-            _randomizerMock.Setup(r => r.Sortear(It.IsAny<int>())).Returns(0);
+            var link = new Link { Id = 1, UrlOriginal = "https://www.example.com" };
+            _randomizer.Sortear(Arg.Any<int>()).Returns(0);
             var linkEncurtado = _service.EncurtarLinks(link);
 
             // Act
